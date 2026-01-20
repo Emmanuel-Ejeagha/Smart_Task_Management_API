@@ -12,7 +12,7 @@ public class Tenant : AuditableEntity
 
     // Navigation Properties
     public virtual ICollection<User> Users { get; private set; } = new List<User>();
-    public virtual ICollection<User> Tasks { get; private set; } = new List<User>();
+    public virtual ICollection<Task> Tasks { get; private set; } = new List<User>();
 
     private Tenant() { } // For Ef Core
 
