@@ -2,7 +2,7 @@ using System;
 
 namespace SmartTaskManagementAPI.Domain.Enums;
 
-public enum TaskStatus
+public enum TasksStatus
 {
     Draft = 1,
     InProgress = 2,
@@ -12,26 +12,26 @@ public enum TaskStatus
 
 public static class TaskStatusExtentions
 {
-    public static string GetDisplayName(this TaskStatus status)
+    public static string GetDisplayName(this TasksStatus status)
     {
         return status switch
         {
-            TaskStatus.Draft => "Draft",
-            TaskStatus.InProgress => "In Progress",
-            TaskStatus.Done => "Done",
-            TaskStatus.Archived => "Archived",
+            TasksStatus.Draft => "Draft",
+            TasksStatus.InProgress => "In Progress",
+            TasksStatus.Done => "Done",
+            TasksStatus.Archived => "Archived",
             _ => status.ToString()
         };
     }
     
-    public static bool CanTransitionTo(this TaskStatus current, TaskStatus next)
+    public static bool CanTransitionTo(this TasksStatus current, TasksStatus next)
     {
-        var allowedTransitions = new Dictionary<TaskStatus, List<TaskStatus>>
+        var allowedTransitions = new Dictionary<TasksStatus, List<TasksStatus>>
         {
-            { TaskStatus.Draft, new List<TaskStatus> { TaskStatus.InProgress, TaskStatus.Archived}},
-            { TaskStatus.InProgress, new List<TaskStatus> { TaskStatus.Done, TaskStatus.Archived }},
-            { TaskStatus.Done, new List<TaskStatus> { TaskStatus.Archived}},
-            { TaskStatus.Archived, new List<TaskStatus>() }
+            { TasksStatus.Draft, new List<TasksStatus> { TasksStatus.InProgress, TasksStatus.Archived}},
+            { TasksStatus.InProgress, new List<TasksStatus> { TasksStatus.Done, TasksStatus.Archived }},
+            { TasksStatus.Done, new List<TasksStatus> { TasksStatus.Archived}},
+            { TasksStatus.Archived, new List<TasksStatus>() }
         };
 
         return allowedTransitions[current].Contains(next);
