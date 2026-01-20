@@ -46,7 +46,7 @@ public class Task : AuditableEntity
         string title,
         string? description,
         TaskPriority priority,
-        DateTime dueDate,
+        DateTime? dueDate,
         DateTime? reminderDate,
         Guid updateBy)
     {
