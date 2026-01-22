@@ -1,4 +1,3 @@
-using System;
 
 namespace SmartTaskManagementAPI.Domain.Common;
 
@@ -26,7 +25,7 @@ public class Result
     public static Result<T> Success<T>(T value) => new(value, true, string.Empty);
 
     public static Result Failure(string error, string? errorCode = null) => new(false, error, errorCode);
-    public static Result ValidateFailure(string error) => new(false, error, "VALIDATION_ERROR");
+    public static Result ValidationFailure(string error) => new(false, error, "VALIDATION_ERROR");
 }
 
 public class Result<T> : Result
