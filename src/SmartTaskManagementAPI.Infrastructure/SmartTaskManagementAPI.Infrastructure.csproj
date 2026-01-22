@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartTaskManagementAPI.Application\SmartTaskManagementAPI.Application.csproj" />
+    <ProjectReference Include="..\SmartTaskManagementAPI.Domain\SmartTaskManagementAPI.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="BackgroundJobs/" />
+    <Folder Include="Data/" />
+    <Folder Include="Data/Configurations/" />
+    <Folder Include="Data/Repositories/" />
+    <Folder Include="Data/Seed/" />
+    <Folder Include="Identity/" />
+    <Folder Include="Services/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.22" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.13+5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
