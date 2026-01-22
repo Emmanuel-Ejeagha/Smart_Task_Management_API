@@ -13,18 +13,12 @@
     <Folder Include="Common/Models/" />
     <Folder Include="Features/Auth/Commands/Login/" />
     <Folder Include="Features/Auth/Validators/Login/" />
-    <Folder Include="Features/Tasks/" />
-    <Folder Include="Features/Tasks/Commands/" />
     <Folder Include="Features/Tasks/Commands/ChangeTaskStatus/" />
-    <Folder Include="Features/Tasks/Commands/CreateTask/" />
     <Folder Include="Features/Tasks/Commands/DeleteTask/" />
     <Folder Include="Features/Tasks/Commands/UpdateTask/" />
-    <Folder Include="Features/Tasks/DTOs/" />
     <Folder Include="Features/Tasks/Queries/" />
     <Folder Include="Features/Tasks/Queries/GetTaskById/" />
     <Folder Include="Features/Tasks/Queries/GetTasks/" />
-    <Folder Include="Features/Tasks/Validators/" />
-    <Folder Include="Interfaces/" />
   </ItemGroup>
 
   <ItemGroup>
