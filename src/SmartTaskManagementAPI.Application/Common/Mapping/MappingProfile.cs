@@ -20,7 +20,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.UpdatedBy,
                 opt => opt.MapFrom(src => src.UpdatedBy.HasValue ? src.UpdatedBy.Value.ToString() : string.Empty));
 
-        // Task to TaskListDto
+        //  Task to TaskListDto
         CreateMap<TaskEntity, TaskListDto>()
             .ForMember(dest => dest.PriorityDisplay,
                 opt => opt.MapFrom(src => src.Priority.GetDisplayName()))
