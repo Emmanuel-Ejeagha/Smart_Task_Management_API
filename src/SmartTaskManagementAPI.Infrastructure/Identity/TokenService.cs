@@ -57,7 +57,7 @@ public class TokenService : ITokenService
             ValidateAudience = true,
             ValidAudience = jwtSettings["Audience"],
             ValidateIssuer = true,
-            ValidIssuer = jwtSettings["Issue"],
+            ValidIssuer = jwtSettings["Issuer"],
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretkey)),
             ValidateLifetime = false // We want to validate expired tokens
