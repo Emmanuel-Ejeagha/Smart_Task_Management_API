@@ -11,6 +11,7 @@ public abstract class AuditableEntity : BaseEntity
     public bool IsDeleted { get; set; } = false;
     public DateTime? DeletedAt { get; set; }
     public Guid? DeletedBy { get; set; }
+    public DateTime? LastLoginAt { get; private set; }
 
     public void MarkAsCreated(Guid createdByUserId)
     {
@@ -29,6 +30,11 @@ public abstract class AuditableEntity : BaseEntity
         IsDeleted = true;
         DeletedAt = DateTime.UtcNow;
         DeletedBy = deletedByUserId;
+    }
+
+    public void UpdateLastLogin()
+    {
+        LastLoginAt = DateTime.UtcNow;
     }
 
     public void Restore()
