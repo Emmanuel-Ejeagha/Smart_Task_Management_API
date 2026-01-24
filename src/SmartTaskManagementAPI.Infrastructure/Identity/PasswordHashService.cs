@@ -8,9 +8,9 @@ public class PasswordHashService : IPasswordHashService
 {
     private readonly PasswordHasher<ApplicationUser> _passwordHasher;
 
-    public PasswordHashService()
+    public PasswordHashService(PasswordHasher<ApplicationUser> passwordHasher)
     {
-        _passwordHasher = new PasswordHasher<ApplicationUser>();
+        _passwordHasher = passwordHasher;
     }
 
     public string HashPassword(string password)
