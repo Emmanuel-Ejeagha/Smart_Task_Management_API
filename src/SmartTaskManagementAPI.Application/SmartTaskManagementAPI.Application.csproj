@@ -12,6 +12,7 @@
     <Folder Include="Common/Mapping/" />
     <Folder Include="Common/Models/" />
     <Folder Include="Features/Auth/Commands/Login/" />
+    <Folder Include="Features/Auth/Commands/RefreshToken/" />
     <Folder Include="Features/Auth/Validators/Login/" />
     <Folder Include="Features/Tasks/Commands/DeleteTask/" />
     <Folder Include="Features/Tasks/Commands/UpdateTask/" />
