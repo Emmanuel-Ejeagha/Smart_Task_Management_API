@@ -4,11 +4,11 @@ using SmartTaskManagementAPI.Application.Common.Interfaces;
 
 namespace SmartTaskManagementAPI.Infrastructure.Identity;
 
-public class PasswordHashService : IPasswordHashService
+public class PasswordHasherService : IPasswordHasherService
 {
     private readonly PasswordHasher<ApplicationUser> _passwordHasher;
 
-    public PasswordHashService(PasswordHasher<ApplicationUser> passwordHasher)
+    public PasswordHasherService(PasswordHasher<ApplicationUser> passwordHasher)
     {
         _passwordHasher = passwordHasher;
     }
