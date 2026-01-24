@@ -1,3 +1,6 @@
+
+# Database ans secret configurations
+appsettings.Development.json
 # .NET
 bin/
 obj/
@@ -6,6 +9,7 @@ obj/
 *.userosscache
 *.sln.docstates
 *.csproj.user
+
 
 # Visual Studio Code
 .vscode/
