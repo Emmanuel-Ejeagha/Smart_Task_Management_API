@@ -119,7 +119,7 @@ public static class DependencyInjection
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IDateTimeService, DateTimeService>();
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IPasswordHasherService, PasswordHashService>();
+        services.AddScoped<IPasswordHasherService, PasswordHasherService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddSingleton<RecurringJobsService>();
 
