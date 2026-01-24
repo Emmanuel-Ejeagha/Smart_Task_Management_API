@@ -16,7 +16,7 @@ public class User : AuditableEntity
     public bool EmailConfirmed { get; private set; }
     public string Role { get; private set; } = "User";
 
-    // Forign keys
+    // Foreign keys
     public Guid TenantId { get; private set; }
 
     // Navigation properties
@@ -116,6 +116,8 @@ public class User : AuditableEntity
         Role = newRole;
         MarkAsUpdated(changedBy);
     }
+
+    
 
     public string GetFullName() => $"{FirstName} {LastName}".Trim();
 }
