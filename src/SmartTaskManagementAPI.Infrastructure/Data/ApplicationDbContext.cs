@@ -1,8 +1,10 @@
 using System.Linq.Expressions;
 using System.Reflection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SmartTaskManagementAPI.Domain.Entities;
 using SmartTaskManagementAPI.Domain.Entities.Base;
+using SmartTaskManagementAPI.Infrastructure.Identity;
 
 namespace SmartTaskManagementAPI.Infrastructure.Data;
 
@@ -20,10 +22,45 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
+        modelBuilder.Entity<ApplicationUser>(b =>
+        {
+            b.ToTable("IdentityUsers");
+        });
+
+        modelBuilder.Entity<ApplicationRole>(b =>
+        {
+            b.ToTable("IdentityRoles");
+        });
+
+        modelBuilder.Entity<IdentityUserClaim<Guid>>(b =>
+        {
+            b.ToTable("IdentityUserClaims");
+        });
+
+        modelBuilder.Entity<IdentityUserRole<Guid>>(b =>
+        {
+            b.ToTable("IdentityUserRoles");
+        });
+
+        modelBuilder.Entity<IdentityUserLogin<Guid>>(b =>
+        {
+            b.ToTable("IdentityUserLogins");
+        });
+
+        modelBuilder.Entity<IdentityRoleClaim<Guid>>(b =>
+        {
+            b.ToTable("IdentityRoleClaims");
+        });
+
+        modelBuilder.Entity<IdentityUserToken<Guid>>(b =>
+        {
+            b.ToTable("IdentityUserTokens");
+        });
+
         // Apply all configurations from this assembly
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        
+
         // Apply global query filters for soft delete
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
@@ -33,7 +70,16 @@ public class ApplicationDbContext : DbContext
                     .HasQueryFilter(GetSoftDeleteFilter(entityType.ClrType));
             }
         }
+
+        // Configure the relationship between ApplicationUser and Domain User
+        modelBuilder.Entity<ApplicationUser>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(au => au.DomainUserId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
     }
+    
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
