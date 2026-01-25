@@ -3,7 +3,7 @@ namespace SmartTaskManagementAPI.Domain.Enums;
 public enum TaskPriority
 {
     Low = 1,
-    Meduim = 2,
+    Medium = 2,
     High = 3,
     Critical = 4
 }
@@ -15,7 +15,7 @@ public static class TaskPrioryExxtensions
         return priority switch
         {
             TaskPriority.Low => "Low",
-            TaskPriority.Meduim => "Medium",
+            TaskPriority.Medium => "Medium",
             TaskPriority.High => "High",
             TaskPriority.Critical => "Critical",
             _ => priority.ToString()
@@ -27,7 +27,7 @@ public static class TaskPrioryExxtensions
         return priority switch
         {
             TaskPriority.Low => 1,
-            TaskPriority.Meduim => 2,
+            TaskPriority.Medium => 2,
             TaskPriority.High => 3,
             TaskPriority.Critical => 4,
             _ => 0
