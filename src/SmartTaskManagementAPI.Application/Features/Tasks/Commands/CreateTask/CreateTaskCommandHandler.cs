@@ -67,7 +67,13 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskD
 
             _logger.LogInformation("Task created: {TaskId} by user {UserId}", task.Id, currentUserId);
 
-            return _mapper.Map<TaskDto>(task);
+            // Map to DTO and return
+            var taskDto = _mapper.Map<TaskDto>(task);
+
+            _logger.LogInformation("Task created successfully. TaskId: {TaskId}, UserId: {UserId}",
+                task.Id, currentUserId);
+
+            return taskDto;
         }
         catch (Exception ex)
         {
