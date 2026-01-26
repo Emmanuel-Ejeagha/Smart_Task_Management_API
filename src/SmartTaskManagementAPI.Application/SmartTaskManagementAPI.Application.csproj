@@ -16,7 +16,6 @@
     <Folder Include="Features/Auth/Validators/Login/" />
     <Folder Include="Features/Tasks/Commands/DeleteTask/" />
     <Folder Include="Features/Tasks/Commands/UpdateTask/" />
-    <Folder Include="Features/Tasks/Queries/" />
     <Folder Include="Features/Tasks/Queries/GetTaskById/" />
     <Folder Include="Features/Tasks/Queries/GetTasks/" />
   </ItemGroup>
