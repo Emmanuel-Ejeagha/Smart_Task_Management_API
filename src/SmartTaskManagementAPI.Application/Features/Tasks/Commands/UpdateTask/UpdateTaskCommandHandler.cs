@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SmartTaskManagementAPI.Application.Common.Exceptions;
 using SmartTaskManagementAPI.Application.Common.Interfaces;
 using SmartTaskManagementAPI.Application.Features.Tasks.DTOs;
+using SmartTaskManagementAPI.Application.Interfaces;
 using TaskEntity = SmartTaskManagementAPI.Domain.Entities.Task;
 
 namespace SmartTaskManagementAPI.Application.Features.Tasks.Commands.UpdateTask;
@@ -15,17 +16,20 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, TaskD
     private readonly ICurrentUserService _currentUserService;
     private readonly IMapper _mapper;
     private readonly ILogger<UpdateTaskCommandHandler> _logger;
+    private readonly ITenantAccessChecker _tenantAccessChecker;
 
     public UpdateTaskCommandHandler(
         IUnitOfWork unitOfWork,
         ICurrentUserService currentUserService,
         IMapper mapper,
-        ILogger<UpdateTaskCommandHandler> logger)
+        ILogger<UpdateTaskCommandHandler> logger,
+        ITenantAccessChecker tenantAccessChecker)
     {
         _unitOfQWork = unitOfWork;
         _currentUserService = currentUserService;
         _mapper = mapper;
         _logger = logger;
+        _tenantAccessChecker = tenantAccessChecker;
     }
 
     public async Task<TaskDto> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
@@ -44,7 +48,7 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, TaskD
                 throw new NotFoundException("Task", request.TaskId);
 
             // Check tenant isolation
-            await CheckTenantAccess(task, currentUserId, cancellationToken);
+            await _tenantAccessChecker.CheckTaskAccessAsync(task, currentUserId, cancellationToken);
 
             // Check if task is archived (business rule)
             if (task.Status == Domain.Enums.TasksStatus.Archived)
@@ -77,15 +81,5 @@ public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, TaskD
                 request.TaskId, _currentUserService.UserId);
             throw;
         }
-    }
-
-    private async Task CheckTenantAccess(TaskEntity task, Guid userId, CancellationToken cancellationToken)
-    {
-        var user = await _unitOfQWork.User.GetByIdAsync(userId, cancellationToken);
-        if (user == null || user.IsDeleted)
-            throw new NotFoundException("User", userId);
-
-        if (user.TenantId != task.TenantId)
-            throw new UnauthorizedAccessException("Access denied to task from different tenant");
     }
 }
