@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SmartTaskManagementAPI.Application.Common.Interfaces;
+using SmartTaskManagementAPI.Application.Features.Tasks.Queries.TenantAccessChecker;
 using SmartTaskManagementAPI.Application.Interfaces;
 using SmartTaskManagementAPI.Infrastructure.BackgroundJobs;
 using SmartTaskManagementAPI.Infrastructure.Data;
@@ -118,6 +119,7 @@ public static class DependencyInjection
         // Services
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IDateTimeService, DateTimeService>();
+        services.AddScoped<ITenantAccessChecker, TenantAccessChecker>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IPasswordHasherService, PasswordHasherService>();
         services.AddScoped<IAuthService, AuthService>();
