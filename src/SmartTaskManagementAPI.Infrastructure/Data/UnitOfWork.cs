@@ -10,6 +10,7 @@ public class UnitOfWork : IUnitOfWork
     private readonly ApplicationDbContext _context;
     private ITaskRepository? _task;
     private ITenantRepository? _tenants;
+    private IUserRepository? _users;
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -19,6 +20,8 @@ public class UnitOfWork : IUnitOfWork
     public ITaskRepository Tasks => _task ??= new TaskRepository(_context);
 
     public ITenantRepository Tenants => _tenants ??= new TenantRepository(_context);
+
+    public IUserRepository User => _users ??= new UserRepository(_context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
