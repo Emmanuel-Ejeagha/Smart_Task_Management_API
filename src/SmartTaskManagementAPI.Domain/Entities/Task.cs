@@ -8,7 +8,7 @@ public class Task : AuditableEntity
 {
     public string Title { get; private set; } = string.Empty;
     public string? Description { get; private set; }
-    public TaskPriority Priority { get; private set; } = TaskPriority.Meduim;
+    public TaskPriority Priority { get; private set; } = TaskPriority.Medium;
     public TasksStatus Status { get; private set; } = TasksStatus.Draft;
     public DateTime? DueDate { get; private set; } 
     public DateTime? ReminderDate { get; private set; } 
@@ -25,7 +25,7 @@ public class Task : AuditableEntity
         string title,
         Guid tenantId,
         Guid createdby,
-        TaskPriority priority = TaskPriority.Meduim)
+        TaskPriority priority = TaskPriority.Medium)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Title cannot be empty", nameof(title));
