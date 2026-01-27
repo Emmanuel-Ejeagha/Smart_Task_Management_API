@@ -1,23 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using SmartTaskManagementAPI.Application.Common.Models;
 using TaskEntity = SmartTaskManagementAPI.Domain.Entities.Task;
+using SmartTaskManagementAPI.Domain.Enums;
 
 namespace SmartTaskManagementAPI.Application.Interfaces;
 
-public interface ITaskRepository
+public interface ITaskRepository : IRepository<TaskEntity>
 {
-    Task<TaskEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<PaginatedResult<TaskEntity>> GetPaginatedAsync(
         Guid tenantId,
         PaginationQuery pagination,
         CancellationToken cancellationToken = default);
     Task<IEnumerable<TaskEntity>> GetTasksDueForReminderAsync(CancellationToken cancellationToken = default);
     Task<IEnumerable<TaskEntity>> GetOverdueTasksAsync(CancellationToken cancellationToken = default);
-    Task AddAsync(TaskEntity task, CancellationToken cancellationToken = default);
-    void Update(TaskEntity task);
-    void Delete(TaskEntity task);
-    Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<TaskEntity>> GetTasksByStatusAsync(Guid tenantId, TasksStatus status, CancellationToken cancellationToken = default);
+    Task<IEnumerable<TaskEntity>> GetTasksByPriorityAsync(Guid tenantId, TaskPriority priority, CancellationToken cancellationToken = default);
+    Task<IEnumerable<TaskEntity>> GetTasksByUserAsync(Guid tenantId, Guid userId, CancellationToken cancellationToken = default);
+    Task<int> CountByTenantAsync(Guid tenantId, CancellationToken cancellationToken = default);
+    Task<int> CountByStatusAsync(Guid tenantId, TasksStatus status, CancellationToken cancellationToken = default);
+    Task<int> CountOverdueByTenantAsync(Guid tenantId, CancellationToken cancellationToken = default);
 }
