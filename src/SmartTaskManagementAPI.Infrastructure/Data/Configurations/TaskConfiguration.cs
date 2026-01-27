@@ -23,7 +23,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<Domain.Entities.Task>
         builder.Property(t => t.Priority)
             .IsRequired()
             .HasConversion<int>()
-            .HasDefaultValue(TaskPriority.Meduim);
+            .HasDefaultValue(TaskPriority.Medium);
 
         builder.Property(t => t.Status)
             .IsRequired()
