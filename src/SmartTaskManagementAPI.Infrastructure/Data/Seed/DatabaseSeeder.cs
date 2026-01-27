@@ -84,7 +84,7 @@ public class DatabaseSeeder
         tasks[3].Update(
             "Write unit tests",
             "Achieve 80% code coverage",
-            Domain.Enums.TaskPriority.Meduim,
+            Domain.Enums.TaskPriority.Medium,
             DateTime.UtcNow.AddDays(7),
             DateTime.UtcNow.AddDays(6),
             adminUser.Id);
