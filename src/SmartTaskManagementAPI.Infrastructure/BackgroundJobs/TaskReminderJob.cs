@@ -4,7 +4,6 @@ using Hangfire;
 using Hangfire.Server;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using SmartTaskManagementAPI.Application.Common.Interfaces;
 using SmartTaskManagementAPI.Domain.Entities;
 using SmartTaskManagementAPI.Domain.Enums;
@@ -37,9 +36,6 @@ public class TaskReminderJob
         try
         {
             using var scope = _serviceScopeFactory.CreateAsyncScope();
-            var UnitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
-            // Get all tasks due for reminder
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
             // Get all tasks due for reminder
