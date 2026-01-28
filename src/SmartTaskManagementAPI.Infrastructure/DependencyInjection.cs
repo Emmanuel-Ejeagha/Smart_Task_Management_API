@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using Hangfire;
 using Hangfire.PostgreSql;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SmartTaskManagementAPI.Application.Common.Interfaces;
+using SmartTaskManagementAPI.Application.Features.Tasks.Commands.SendTaskReminder;
 using SmartTaskManagementAPI.Application.Features.Tasks.Queries.TenantAccessChecker;
 using SmartTaskManagementAPI.Application.Interfaces;
 using SmartTaskManagementAPI.Infrastructure.BackgroundJobs;
@@ -128,13 +130,51 @@ public static class DependencyInjection
         // Backgroumd Jobs
         services.AddScoped<TaskReminderJob>();
 
-        // Hangfire
+         /// Background Jobs - Hangfire
         services.AddHangfire(config =>
-            config.UsePostgreSqlStorage(options =>
-                {
-                    options.UseNpgsqlConnection(configuration.GetConnectionString("DefaultConnection"));
-                }));
-        services.AddHangfireServer();
+        {
+            config
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UsePostgreSqlStorage(
+                    options =>
+                    {
+                        options.UseNpgsqlConnection(
+                            configuration.GetConnectionString("DefaultConnection"));
+                    },
+                    new PostgreSqlStorageOptions
+                    {
+                        SchemaName = "hangfire",
+                        QueuePollInterval = TimeSpan.FromSeconds(15),
+                        JobExpirationCheckInterval = TimeSpan.FromHours(1),
+                        CountersAggregateInterval = TimeSpan.FromMinutes(5),
+                        PrepareSchemaIfNecessary = true,
+                        UseNativeDatabaseTransactions = true,
+                    });
+        });
+
+        services.AddHangfireServer(options =>
+        {
+            options.ServerName = $"SmartTaskManagementAPI-{Environment.MachineName}";
+            options.WorkerCount = Environment.ProcessorCount * 5;
+            options.Queues = new[] { "default", "critical", "low" };
+            options.SchedulePollingInterval = TimeSpan.FromSeconds(15);
+        });
+
+
+        // Background Job Services
+        services.AddScoped<TaskReminderJob>();
+        services.AddScoped<OverdueTaskNotificationJob>();
+        services.AddScoped<DatabaseCleanupJob>();
+        services.AddScoped<SendTaskReminderCommandHandler>();
+        
+        // Email Service
+        services.AddScoped<IEmailService, EmailService>();
+        
+        // Recurring Jobs Service (as hosted service)
+        services.AddSingleton<RecurringJobsService>();
+        services.AddHostedService(provider => provider.GetRequiredService<RecurringJobsService>());
 
         return services;        
     }
