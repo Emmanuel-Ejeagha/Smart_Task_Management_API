@@ -5,16 +5,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common/" />
     <Folder Include="Common/Behaviors/" />
     <Folder Include="Common/Exceptions/" />
-    <Folder Include="Common/Interfaces/" />
     <Folder Include="Common/Mapping/" />
     <Folder Include="Common/Models/" />
     <Folder Include="Features/Auth/Commands/Login/" />
     <Folder Include="Features/Auth/Commands/RefreshToken/" />
     <Folder Include="Features/Auth/Validators/Login/" />
     <Folder Include="Features/Tasks/Commands/DeleteTask/" />
+    <Folder Include="Features/Tasks/Commands/SendTaskReminder/" />
     <Folder Include="Features/Tasks/Commands/UpdateTask/" />
     <Folder Include="Features/Tasks/Queries/GetTaskById/" />
     <Folder Include="Features/Tasks/Queries/GetTasks/" />
