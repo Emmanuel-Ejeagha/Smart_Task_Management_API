@@ -1,27 +1,68 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Hangfire;
+using Hangfire.Common;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace SmartTaskManagementAPI.Infrastructure.BackgroundJobs;
 
-public class RecurringJobsService
+public class RecurringJobsService : IHostedService
 {
-    private readonly IServiceProvider _serviceProdiver;
+    private readonly ILogger<RecurringJobsService> _logger;
+    private readonly IServiceProvider _serviceProvider;
 
-    public RecurringJobsService(IServiceProvider serviceProvider)
+    public RecurringJobsService(
+        ILogger<RecurringJobsService> logger,
+        IServiceProvider serviceProvider)
     {
-        _serviceProdiver = serviceProvider;
+        _logger = logger;
+        _serviceProvider = serviceProvider;
     }
 
-    public void ScheduleRecurringJobs()
+    public Task StartAsync(CancellationToken cancellationToken)
     {
-        // Schedule task reminders to run every hour
-        RecurringJob.AddOrUpdate<TaskReminderJob>(
-            "task-reminders",
-            job => job.SendReminderAsync(),
-            Cron.Hourly,
-            new RecurringJobOptions
-            {
-                TimeZone = TimeZoneInfo.Utc
-            });
+        try
+        {
+            _logger.LogInformation("Starting recurring jobs service...");
+            
+            // Schedule task reminders to run every 30 minutes
+            RecurringJob.AddOrUpdate<TaskReminderJob>(
+                "task-reminders",
+                job => job.SendRemindersAsync(),
+                "*/30 * * * *"); // Every 30 minutes
+            
+            _logger.LogInformation("Scheduled task reminders job (every 30 minutes)");
+            
+            // Schedule overdue task notifications to run daily at 9 AM UTC
+            RecurringJob.AddOrUpdate<OverdueTaskNotificationJob>(
+                "overdue-task-notifications",
+                job => job.SendOverdueNotificationsAsync(),
+                "0 9 * * *"); // Daily at 9:00 AM UTC
+            
+            _logger.LogInformation("Scheduled overdue task notifications job (daily at 9 AM UTC)");
+            
+            // Schedule database cleanup job to run weekly on Sunday at 2 AM UTC
+            RecurringJob.AddOrUpdate<DatabaseCleanupJob>(
+                "database-cleanup",
+                job => job.CleanupOldDataAsync(),
+                "0 2 * * 0"); // Weekly on Sunday at 2:00 AM UTC
+            
+            _logger.LogInformation("Scheduled database cleanup job (weekly on Sunday at 2 AM UTC)");
+            
+            return Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to schedule recurring jobs");
+            throw;
+        }
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Stopping recurring jobs service...");
+        return Task.CompletedTask;
     }
 }
