@@ -97,7 +97,7 @@ public class Task : AuditableEntity
         return DueDate.HasValue && DueDate.Value < DateTime.UtcNow && Status != TasksStatus.Done;
     }
 
-    public bool NeedReminder()
+    public bool NeedsReminder()
     {
         return ReminderDate.HasValue &&
                 ReminderDate.Value <= DateTime.UtcNow &&
