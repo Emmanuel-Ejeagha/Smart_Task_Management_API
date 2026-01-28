@@ -8,8 +8,9 @@ namespace SmartTaskManagementAPI.Application.Interfaces;
 public interface IUserRepository
 {
     Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
+ Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
     Task<User?> GetByIdWithTenantAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<User?> GetByEmailWithTenantAsync(string email, CancellationToken cancellationToken = default);
     Task<IEnumerable<User>> GetUsersByTenantAsync(Guid tenantId, CancellationToken cancellationToken = default);
     Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
     Task<bool> ExistsByEmailAndTenantAsync(string email, Guid tenantId, CancellationToken cancellationToken = default);
@@ -17,4 +18,9 @@ public interface IUserRepository
         Guid tenantId,
         PaginationQuery pagination,
         CancellationToken cancellationToken = default);
+    Task<IEnumerable<User>> GetActiveUsersByTenantAsync(Guid tenantId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<User>> GetUsersByRoleAsync(Guid tenantId, string role, CancellationToken cancellationToken = default);
+    Task<bool> IsEmailUniqueAsync(string email, Guid? excludeUserId = null, CancellationToken cancellationToken = default);
+    Task<int> CountByTenantAsync(Guid tenantId, CancellationToken cancellationToken = default);
+    Task<int> CountActiveByTenantAsync(Guid tenantId, CancellationToken cancellationToken = default);
 }
