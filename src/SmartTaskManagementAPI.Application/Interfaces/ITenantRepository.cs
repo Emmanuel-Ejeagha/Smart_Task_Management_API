@@ -8,4 +8,6 @@ public interface ITenantRepository
     Task<TenantEntity?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default);
     Task<bool> ExistsBySlugAsync(string slug, CancellationToken cancellationToken = default);
     Task AddAsync(TenantEntity tenant, CancellationToken cancellationToken = default);
+    Task<IEnumerable<TenantEntity>> GetActiveTenantsAsync(CancellationToken cancellationToken = default);
+    Task<int> CountActiveAsync(CancellationToken cancellationToken = default);
 }
