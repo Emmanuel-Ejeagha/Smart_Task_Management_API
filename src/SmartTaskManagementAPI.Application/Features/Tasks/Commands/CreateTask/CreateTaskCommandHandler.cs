@@ -1,10 +1,9 @@
-using System;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SmartTaskManagementAPI.Application.Common.Exceptions;
 using SmartTaskManagementAPI.Application.Common.Interfaces;
 using SmartTaskManagementAPI.Application.Features.Tasks.DTOs;
-using TaskEntity = SmartTaskManagementAPI.Domain.Entities.Task;
 
 namespace SmartTaskManagementAPI.Application.Features.Tasks.Commands.CreateTask;
 
@@ -14,41 +13,46 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskD
     private readonly ICurrentUserService _currentUserService;
     private readonly IMapper _mapper;
     private readonly ILogger<CreateTaskCommandHandler> _logger;
+    private readonly IJobScheduler _jobScheduler;
+
     public CreateTaskCommandHandler(
         IUnitOfWork unitOfWork,
         ICurrentUserService currentUserService,
         IMapper mapper,
-        ILogger<CreateTaskCommandHandler> logger)
+        ILogger<CreateTaskCommandHandler> logger,
+        IJobScheduler jobScheduler)
     {
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
         _mapper = mapper;
         _logger = logger;
+        _jobScheduler = jobScheduler;
     }
 
     public async Task<TaskDto> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
     {
         try
         {
+            // Get current user info
             if (!Guid.TryParse(_currentUserService.UserId, out var currentUserId))
                 throw new UnauthorizedAccessException("User not authenticated");
 
-            if (string.IsNullOrEmpty(_currentUserService.UserId))
-                throw new UnauthorizedAccessException("User ID not found in claims");
+            // Get current user to get tenant ID
+            var currentUser = await _unitOfWork.User.GetByIdAsync(currentUserId, cancellationToken);
+            if (currentUser == null || currentUser.IsDeleted)
+                throw new NotFoundException("User", currentUserId);
 
-            // Get user to get tenant ID
-            var user = await _unitOfWork.User.GetByIdAsync(currentUserId, cancellationToken);
-            if (user == null || user.IsDeleted)
-                throw new UnauthorizedAccessException("User not found or inactive");
+            if (!currentUser.IsActive)
+                throw new UnauthorizedAccessException("User account is deactivated");
 
-            // Create the task
-            var task = TaskEntity.Create(
+            // Create domain task entity
+            var task = Domain.Entities.Task.Create(
                 request.Title,
-                user.TenantId,
+                currentUser.TenantId,
                 currentUserId,
                 request.Priority);
 
-            // Update optional fields
+            // Update additional properties if provided
             if (!string.IsNullOrWhiteSpace(request.Description) ||
                 request.DueDate.HasValue ||
                 request.ReminderDate.HasValue)
@@ -62,22 +66,34 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskD
                     currentUserId);
             }
 
+            // Add to repository
             await _unitOfWork.Tasks.AddAsync(task, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("Task created: {TaskId} by user {UserId}", task.Id, currentUserId);
+            // Schedule reminder if reminder date is set
+            if (request.ReminderDate.HasValue && request.ReminderDate > DateTime.UtcNow)
+            {
+                var jobId = _jobScheduler.ScheduleTaskReminder(
+                    task.Id, 
+                    currentUserId, 
+                    request.ReminderDate.Value);
+                
+                _logger.LogInformation(
+                    "Scheduled reminder job {JobId} for task {TaskId} at {ReminderDate}",
+                    jobId, task.Id, request.ReminderDate);
+            }
 
             // Map to DTO and return
             var taskDto = _mapper.Map<TaskDto>(task);
-
-            _logger.LogInformation("Task created successfully. TaskId: {TaskId}, UserId: {UserId}",
+            
+            _logger.LogInformation("Task created successfully. TaskId: {TaskId}, UserId: {UserId}", 
                 task.Id, currentUserId);
-
+            
             return taskDto;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating task");
+            _logger.LogError(ex, "Error creating task for user: {UserId}", _currentUserService.UserId);
             throw;
         }
     }
