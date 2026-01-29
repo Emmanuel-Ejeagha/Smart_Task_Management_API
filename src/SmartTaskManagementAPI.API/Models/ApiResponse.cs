@@ -10,10 +10,7 @@ public class ApiResponse<T>
     public List<string>? Errors { get; set; }
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
-    public ApiResponse()
-    {
-        
-    }
+    public ApiResponse() { }
     public ApiResponse(T data, string message = "")
     {
         Success = true;
