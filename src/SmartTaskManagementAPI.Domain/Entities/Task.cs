@@ -92,7 +92,7 @@ public class Task : AuditableEntity
         ChangeStatus(TasksStatus.Archived, archivedBy);
     }
 
-    public bool IsOverDue()
+    public bool IsOverdue()
     {
         return DueDate.HasValue && DueDate.Value < DateTime.UtcNow && Status != TasksStatus.Done;
     }
