@@ -65,4 +65,24 @@ public class RecurringJobsService : IHostedService
         _logger.LogInformation("Stopping recurring jobs service...");
         return Task.CompletedTask;
     }
+    public void ScheduleRecurringJobs()
+    {
+        // Updated call for TaskReminderJob
+        RecurringJob.AddOrUpdate<TaskReminderJob>(
+            "task-reminders",
+            job => job.SendRemindersAsync(),
+            Cron.Hourly); // Removed the TimeZoneInfo parameter
+
+        // Updated call for OverdueTaskNotificationJob
+        RecurringJob.AddOrUpdate<OverdueTaskNotificationJob>(
+            "overdue-task-notifications",
+            job => job.SendOverdueNotificationsAsync(),
+            Cron.Daily); // Runs daily at midnight UTC. Removed TimeZoneInfo.
+
+        // Updated call for DatabaseCleanupJob
+        RecurringJob.AddOrUpdate<DatabaseCleanupJob>(
+            "database-cleanup",
+            job => job.CleanupOldDataAsync(),
+            Cron.Weekly(DayOfWeek.Sunday, 2)); // Runs Sunday at 02:00 UTC.
+    }
 }

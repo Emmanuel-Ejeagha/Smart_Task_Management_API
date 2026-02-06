@@ -21,30 +21,30 @@ public class TaskReminderJob
     public async Task SendRemindersAsync()
     {
         _logger.LogInformation("Starting task reminder job at {UtcNow}", DateTime.UtcNow);
-        
+
         using var scope = _serviceScopeFactory.CreateScope();
-        
+
         try
         {
             var taskRepository = scope.ServiceProvider.GetRequiredService<ITaskRepository>();
             var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
             var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
-            
+
             // Get tasks that need reminders
             var tasksDueForReminder = await taskRepository.GetTasksDueForReminderAsync();
-            
+
             _logger.LogInformation("Found {Count} tasks due for reminder", tasksDueForReminder.Count());
 
             int sentCount = 0;
             int errorCount = 0;
-            
+
             foreach (var task in tasksDueForReminder)
             {
                 try
                 {
                     // Get the user who created the task
                     var user = await userRepository.GetByIdAsync(task.CreatedBy ?? Guid.Empty);
-                    
+
                     if (user == null || !user.IsActive || user.IsDeleted)
                     {
                         _logger.LogWarning(
@@ -60,9 +60,9 @@ public class TaskReminderJob
                         task.Title,
                         task.DueDate ?? DateTime.UtcNow,
                         CancellationToken.None);
-                    
+
                     sentCount++;
-                    
+
                     // Log the reminder
                     _logger.LogInformation(
                         "Reminder sent for task: {TaskTitle} (ID: {TaskId}), User: {UserEmail}, Due: {DueDate}",
@@ -76,7 +76,7 @@ public class TaskReminderJob
                         task.Id, task.CreatedBy);
                 }
             }
-            
+
             _logger.LogInformation(
                 "Completed task reminder job at {UtcNow}. Sent: {SentCount}, Errors: {ErrorCount}",
                 DateTime.UtcNow, sentCount, errorCount);
@@ -85,6 +85,50 @@ public class TaskReminderJob
         {
             _logger.LogError(ex, "Error occurred while running task reminder job");
             throw; // Re-throw to trigger Hangfire retry
+        }
+    }
+    
+    public async Task SendReminderForTaskAsync(Guid taskId, Guid userId, CancellationToken cancellationToken)
+    {
+        using var scope = _serviceScopeFactory.CreateScope();
+        
+        try
+        {
+            var taskRepository = scope.ServiceProvider.GetRequiredService<ITaskRepository>();
+            var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+            var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
+            
+            // Get task and user
+            var task = await taskRepository.GetByIdAsync(taskId, cancellationToken);
+            var user = await userRepository.GetByIdAsync(userId, cancellationToken);
+            
+            if (task == null || task.IsDeleted)
+            {
+                _logger.LogWarning("Task not found for reminder: {TaskId}", taskId);
+                return;
+            }
+            
+            if (user == null || !user.IsActive || user.IsDeleted)
+            {
+                _logger.LogWarning("User not found or inactive for reminder: {UserId}", userId);
+                return;
+            }
+
+            // Send reminder email
+            await emailService.SendTaskReminderEmailAsync(
+                user.Email,
+                user.GetFullName(),
+                task.Title,
+                task.DueDate ?? DateTime.UtcNow,
+                cancellationToken);
+            
+            _logger.LogInformation(
+                "Reminder sent for task: {TaskTitle} (ID: {TaskId}), User: {UserEmail}",
+                task.Title, task.Id, user.Email);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to send reminder for task {TaskId}", taskId);
         }
     }
 }
