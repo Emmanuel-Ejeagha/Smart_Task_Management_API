@@ -1,14 +1,16 @@
-using System.Linq.Expressions;
-using System.Reflection;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SmartTaskManagementAPI.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using TaskEntity = SmartTaskManagementAPI.Domain.Entities.Task;
 using SmartTaskManagementAPI.Domain.Entities.Base;
 using SmartTaskManagementAPI.Infrastructure.Identity;
+using System.Reflection;
+using SmartTaskManagementAPI.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using System.Linq.Expressions;
 
 namespace SmartTaskManagementAPI.Infrastructure.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -17,69 +19,127 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<User> Users => Set<User>();
-    public DbSet<Domain.Entities.Task> Tasks => Set<Domain.Entities.Task>();
+    public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // IMPORTANT: Call base FIRST to let Identity configure its tables
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<ApplicationUser>(b =>
+        // Rename Identity tables to follow our naming conventions WITH PROPER KEYS
+        modelBuilder.Entity<ApplicationUser>(entity =>
         {
-            b.ToTable("IdentityUsers");
+            entity.ToTable("IdentityUsers");
+            
+            // Configure primary key (already done by base, but we can be explicit)
+            entity.HasKey(u => u.Id);
+            
+            // Configure indexes
+            entity.HasIndex(u => u.NormalizedEmail).IsUnique();
+            entity.HasIndex(u => u.NormalizedUserName).IsUnique();
+            entity.HasIndex(u => u.TenantId);
+            entity.HasIndex(u => u.DomainUserId);
+            entity.HasIndex(u => u.IsActive);
+            
+            // Configure the relationship between ApplicationUser and Domain User
+            entity.HasOne<Domain.Entities.User>()
+                .WithMany()
+                .HasForeignKey(au => au.DomainUserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
-        modelBuilder.Entity<ApplicationRole>(b =>
+        modelBuilder.Entity<ApplicationRole>(entity =>
         {
-            b.ToTable("IdentityRoles");
+            entity.ToTable("IdentityRoles");
+            entity.HasKey(r => r.Id);
+            entity.HasIndex(r => r.NormalizedName).IsUnique();
         });
 
-        modelBuilder.Entity<IdentityUserClaim<Guid>>(b =>
+        modelBuilder.Entity<IdentityUserClaim<Guid>>(entity =>
         {
-            b.ToTable("IdentityUserClaims");
+            entity.ToTable("IdentityUserClaims");
+            entity.HasKey(uc => uc.Id);
+            entity.HasIndex(uc => uc.UserId);
         });
 
-        modelBuilder.Entity<IdentityUserRole<Guid>>(b =>
+        modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
         {
-            b.ToTable("IdentityUserRoles");
+            entity.ToTable("IdentityUserRoles");
+            entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+            
+            // Configure foreign keys
+            entity.HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(ur => ur.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            entity.HasOne<ApplicationRole>()
+                .WithMany()
+                .HasForeignKey(ur => ur.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<IdentityUserLogin<Guid>>(b =>
+        modelBuilder.Entity<IdentityUserLogin<Guid>>(entity =>
         {
-            b.ToTable("IdentityUserLogins");
+            entity.ToTable("IdentityUserLogins");
+            
+            // COMPOSITE KEY: LoginProvider + ProviderKey (as defined by Identity)
+            entity.HasKey(l => new { l.LoginProvider, l.ProviderKey });
+            
+            // Limit the key length since these are used in composite key
+            entity.Property(l => l.LoginProvider).HasMaxLength(128);
+            entity.Property(l => l.ProviderKey).HasMaxLength(128);
+            
+            entity.HasIndex(l => l.UserId);
+            
+            // Configure foreign key
+            entity.HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<IdentityRoleClaim<Guid>>(b =>
+        modelBuilder.Entity<IdentityRoleClaim<Guid>>(entity =>
         {
-            b.ToTable("IdentityRoleClaims");
+            entity.ToTable("IdentityRoleClaims");
+            entity.HasKey(rc => rc.Id);
+            entity.HasIndex(rc => rc.RoleId);
+            
+            // Configure foreign key
+            entity.HasOne<ApplicationRole>()
+                .WithMany()
+                .HasForeignKey(rc => rc.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<IdentityUserToken<Guid>>(b =>
+        modelBuilder.Entity<IdentityUserToken<Guid>>(entity =>
         {
-            b.ToTable("IdentityUserTokens");
+            entity.ToTable("IdentityUserTokens");
+            
+            // COMPOSITE KEY: UserId + LoginProvider + Name (as defined by Identity)
+            entity.HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+            
+            // Limit the key length since these are used in composite key
+            entity.Property(t => t.LoginProvider).HasMaxLength(128);
+            entity.Property(t => t.Name).HasMaxLength(128);
         });
-
-        // Apply all configurations from this assembly
+        
+        // Apply all configurations from this assembly (for our domain entities)
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-        // Apply global query filters for soft delete
+        
+        // Apply global query filters for soft delete (for our domain entities only)
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            if (typeof(AuditableEntity).IsAssignableFrom(entityType.ClrType))
+            if (typeof(AuditableEntity).IsAssignableFrom(entityType.ClrType) && 
+                !typeof(ApplicationUser).IsAssignableFrom(entityType.ClrType) &&
+                !typeof(ApplicationRole).IsAssignableFrom(entityType.ClrType))
             {
                 modelBuilder.Entity(entityType.ClrType)
                     .HasQueryFilter(GetSoftDeleteFilter(entityType.ClrType));
             }
         }
-
-        // Configure the relationship between ApplicationUser and Domain User
-        modelBuilder.Entity<ApplicationUser>()
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(au => au.DomainUserId)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.Restrict);
     }
-    
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -87,9 +147,6 @@ public class ApplicationDbContext : DbContext
         UpdateAuditFields();
         
         var result = await base.SaveChangesAsync(cancellationToken);
-        
-        // Dispatch domain events
-        await DispatchDomainEvents();
         
         return result;
     }
@@ -122,21 +179,6 @@ public class ApplicationDbContext : DbContext
                 entity.UpdatedAt = DateTime.UtcNow;
                 // Note: UpdatedBy will be set by the application layer
             }
-        }
-    }
-
-    private async System.Threading.Tasks.Task DispatchDomainEvents()
-    {
-        var domainEventEntities = ChangeTracker.Entries<BaseEntity>()
-            .Select(po => po.Entity)
-            .Where(po => po.DomainEvents.Any())
-            .ToArray();
-
-        foreach (var entity in domainEventEntities)
-        {
-            // In a real application, you would publish these events to a message bus
-            // For now, we'll just clear them
-            entity.ClearDomainEvents();
         }
     }
 
