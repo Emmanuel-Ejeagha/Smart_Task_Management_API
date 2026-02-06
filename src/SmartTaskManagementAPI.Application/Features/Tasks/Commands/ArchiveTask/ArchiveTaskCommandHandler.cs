@@ -1,11 +1,10 @@
-using System;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SmartTaskManagementAPI.Application.Common.Exceptions;
 using SmartTaskManagementAPI.Application.Common.Interfaces;
 using SmartTaskManagementAPI.Application.Features.Tasks.DTOs;
-using SmartTaskManagementAPI.Application.Interfaces;
+using SmartTaskManagementAPI.Domain.Enums;
 
 namespace SmartTaskManagementAPI.Application.Features.Tasks.Commands.ArchiveTask;
 
@@ -14,20 +13,17 @@ public class ArchiveTaskCommandHandler : IRequestHandler<ArchiveTaskCommand, Tas
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMapper _mapper;
-    private readonly ITenantAccessChecker _tenantAccessChecker;
-    private readonly ILogger _logger;
+    private readonly ILogger<ArchiveTaskCommandHandler> _logger;
 
     public ArchiveTaskCommandHandler(
         IUnitOfWork unitOfWork,
         ICurrentUserService currentUserService,
         IMapper mapper,
-        ITenantAccessChecker tenantAccessChecker,
         ILogger<ArchiveTaskCommandHandler> logger)
     {
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
         _mapper = mapper;
-        _tenantAccessChecker = tenantAccessChecker;
         _logger = logger;
     }
 
@@ -45,9 +41,9 @@ public class ArchiveTaskCommandHandler : IRequestHandler<ArchiveTaskCommand, Tas
                 throw new NotFoundException("Task", request.TaskId);
 
             // Check tenant isolation
-            await _tenantAccessChecker.CheckTaskAccessAsync(task, currentUserId, cancellationToken);
+            await CheckTenantAccess(task, currentUserId, cancellationToken);
 
-            // Archive the task using domainentity method
+            // Archive the task using domain entity method
             task.Archive(currentUserId);
 
             // Save changes
@@ -56,17 +52,27 @@ public class ArchiveTaskCommandHandler : IRequestHandler<ArchiveTaskCommand, Tas
 
             // Map to DTO and return
             var taskDto = _mapper.Map<TaskDto>(task);
-
-            _logger.LogInformation("Task archived successfully. TaskId: {TaskId}, UserId: {UserId}",
+            
+            _logger.LogInformation("Task archived successfully. TaskId: {TaskId}, UserId: {UserId}", 
                 task.Id, currentUserId);
-
+            
             return taskDto;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error archiving task {TaskId} for user: {UserId}",
+            _logger.LogError(ex, "Error archiving task {TaskId} for user: {UserId}", 
                 request.TaskId, _currentUserService.UserId);
             throw;
         }
+    }
+
+    private async Task CheckTenantAccess(Domain.Entities.Task task, Guid userId, CancellationToken cancellationToken)
+    {
+        var user = await _unitOfWork.User.GetByIdAsync(userId, cancellationToken);
+        if (user == null || user.IsDeleted)
+            throw new NotFoundException("User", userId);
+
+        if (user.TenantId != task.TenantId)
+            throw new UnauthorizedAccessException("Access denied to task from different tenant");
     }
 }
