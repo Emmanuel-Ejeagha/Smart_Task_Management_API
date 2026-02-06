@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using UserEntity = SmartTaskManagementAPI.Domain.Entities.User;
 using TenantEntity = SmartTaskManagementAPI.Domain.Entities.Tenant;
 using TaskEntity = SmartTaskManagementAPI.Domain.Entities.Task;
+using Microsoft.EntityFrameworkCore;
 
 namespace SmartTaskManagementAPI.Infrastructure.Data.Seed;
 
@@ -13,14 +14,13 @@ public class DatabaseSeeder
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
 
         // Check if we already have data
-        if (context.Tenants.Any())
+        if (await context.Tenants.AnyAsync())
         {
             return; // Database has been seeded
         }
-
         // Create a default tenant
         var tenant = TenantEntity.Create(
             "Default Tenant",
