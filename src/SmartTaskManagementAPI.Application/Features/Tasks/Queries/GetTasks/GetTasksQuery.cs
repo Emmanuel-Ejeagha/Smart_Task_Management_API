@@ -11,5 +11,5 @@ public class GetTasksQuery : IRequest<PaginatedResult<TaskListDto>>
     public PaginationQuery Pagination { get; set; } = new PaginationQuery();
     public TasksStatus? Status { get; set; }
     public TaskPriority? Priority { get; set; }
-    public bool? OverDueOnly { get; set; }
+    public bool? OverdueOnly { get; set; }
 }
