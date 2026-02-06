@@ -13,20 +13,20 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskD
     private readonly ICurrentUserService _currentUserService;
     private readonly IMapper _mapper;
     private readonly ILogger<CreateTaskCommandHandler> _logger;
-    private readonly IJobScheduler _jobScheduler;
+    private readonly IBackgroundJobService _backgroundJobService;
 
     public CreateTaskCommandHandler(
         IUnitOfWork unitOfWork,
         ICurrentUserService currentUserService,
         IMapper mapper,
         ILogger<CreateTaskCommandHandler> logger,
-        IJobScheduler jobScheduler)
+        IBackgroundJobService backgroundJobService)
     {
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
         _mapper = mapper;
         _logger = logger;
-        _jobScheduler = jobScheduler;
+        _backgroundJobService = backgroundJobService;
     }
 
     public async Task<TaskDto> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
@@ -73,7 +73,7 @@ public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskD
             // Schedule reminder if reminder date is set
             if (request.ReminderDate.HasValue && request.ReminderDate > DateTime.UtcNow)
             {
-                var jobId = _jobScheduler.ScheduleTaskReminder(
+                var jobId = _backgroundJobService.ScheduleTaskReminder(
                     task.Id, 
                     currentUserId, 
                     request.ReminderDate.Value);
