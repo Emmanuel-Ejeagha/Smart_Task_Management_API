@@ -6,6 +6,7 @@ namespace SmartTaskManagementAPI.Infrastructure.BackgroundJobs;
 
 public class HangfireDashboardAuthorizationFilter : IDashboardAuthorizationFilter
 {
+    
     public bool Authorize(DashboardContext context)
     {
         var httpContext = context.GetHttpContext();
