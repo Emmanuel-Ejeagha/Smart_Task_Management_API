@@ -1,11 +1,7 @@
-using TaskEntity = SmartTaskManagementAPI.Domain.Entities.Task;
-
-namespace SmartTaskManagementAPI.Application.Interfaces;
+namespace SmartTaskManagementAPI.Application.Common.Interfaces;
 
 public interface ITenantAccessChecker
 {
-    Task CheckTaskAccessAsync(
-        TaskEntity task,
-        Guid userId,
-        CancellationToken cancellationToken);
+    Task<bool> HasAccessToTaskAsync(Guid taskId, Guid userId, CancellationToken cancellationToken = default);
+    Task<bool> HasAccessToTenantAsync(Guid tenantId, Guid userId, CancellationToken cancellationToken = default);
 }
