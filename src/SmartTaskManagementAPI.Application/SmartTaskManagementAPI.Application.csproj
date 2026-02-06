@@ -17,6 +17,17 @@
     <Folder Include="Features/Tasks/Commands/UpdateTask/" />
     <Folder Include="Features/Tasks/Queries/GetTaskById/" />
     <Folder Include="Features/Tasks/Queries/GetTasks/" />
+    <Folder Include="Features/TasksV2/" />
+    <Folder Include="Features/Tenants/" />
+    <Folder Include="Features/Tenants/Commands/" />
+    <Folder Include="Features/Tenants/Commands/CreateTenant/" />
+    <Folder Include="Features/Tenants/DTOs/" />
+    <Folder Include="Features/Tenants/Queries/" />
+    <Folder Include="Features/Users/" />
+    <Folder Include="Features/Users/Commands/" />
+    <Folder Include="Features/Users/DTOs/" />
+    <Folder Include="Features/Users/Queries/" />
+    <Folder Include="Features/Users/Queries/GetAllUsers/" />
   </ItemGroup>
 
   <ItemGroup>
