@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartTaskManagement.Application\SmartTaskManagement.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Entity Framework Core with PostgreSQL -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    
+    <!-- Background jobs with Hangfire -->
+    <PackageReference Include="Hangfire" />
+    <PackageReference Include="Hangfire.PostgreSql"  />
+    <PackageReference Include="Hangfire.AspNetCore" />
+    
+    <!-- Auth0 JWT validation -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    
+    <!-- For audit logging -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" />
+    
+    <!-- For concurrency handling -->
+    <PackageReference Include="EFCore.CheckConstraints" />
+    <PackageReference Include="SendGrid"  />
+    <PackageReference Include="SendGrid.Extensions.DependencyInjection" />
+    <PackageReference Include="EFCore.NamingConventions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Authentication/" />
+    <Folder Include="BackgroundJobs/" />
+    <Folder Include="Data/Configuration/" />
+    <Folder Include="Data/Entities/" />
+    <Folder Include="Repositories/" />
+    <Folder Include="Services/" />
+  </ItemGroup>
+
+</Project>
