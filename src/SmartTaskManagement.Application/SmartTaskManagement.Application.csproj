@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+   <ItemGroup>
+    <ProjectReference Include="..\SmartTaskManagement.Domain\SmartTaskManagement.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- MediatR for CQRS pattern -->
+    <PackageReference Include="MediatR"  />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection"  />
+    
+    <!-- AutoMapper for object mapping -->
+    <PackageReference Include="AutoMapper"  />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection"  />
+    
+    <!-- FluentValidation for request validation -->
+    <PackageReference Include="FluentValidation"  />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions"  />
+    <PackageReference Include="FluentValidation.AspNetCore"  />
+    
+    <!-- For Result pattern -->
+    <PackageReference Include="ErrorOr" />
+    
+    <!-- For pagination and querying -->
+    <PackageReference Include="Ardalis.Specification" />
+    <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" />
+    
+    <!-- Entity Framework Core for async operations -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    
+    <!-- For async LINQ operations -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" />
+    
+    <!-- For Stopwatch in LoggingBehavior -->
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Common/" />
+    <Folder Include="Common/Behaviors/" />
+    <Folder Include="Common/Exceptions/" />
+    <Folder Include="Common/Interfaces/" />
+    <Folder Include="Common/Models/" />
+    <Folder Include="Features/Reminders/Commands/" />
+    <Folder Include="Features/Reminders/Commands/RescheduleReminder/" />
+    <Folder Include="Features/Reminders/Commands/TriggerReminder/" />
+    <Folder Include="Features/Reminders/Dtos/" />
+    <Folder Include="Features/Tenant/Commands/" />
+    <Folder Include="Features/Tenant/Commands/CreateTenant/" />
+    <Folder Include="Features/Tenant/Dtos/" />
+    <Folder Include="Features/Tenant/Queries/" />
+    <Folder Include="Features/Tenant/Queries/GetTenantById/" />
+    <Folder Include="Features/WorkItems/" />
+    <Folder Include="Features/WorkItems/Commands/" />
+    <Folder Include="Features/WorkItems/Commands/AddReminderToWorkItem/" />
+    <Folder Include="Features/WorkItems/Commands/BulkUpdateWorkItems/" />
+    <Folder Include="Features/WorkItems/Commands/ChangeWorkItemState/" />
+    <Folder Include="Features/WorkItems/Commands/CreateWorkItem/" />
+    <Folder Include="Features/WorkItems/Commands/DeleteWorkItem/" />
+    <Folder Include="Features/WorkItems/Commands/UpdateWorkItem/" />
+    <Folder Include="Features/WorkItems/Dtos/" />
+    <Folder Include="Features/WorkItems/Queries/" />
+    <Folder Include="Features/WorkItems/Queries/GetOverdueWorkItems/" />
+    <Folder Include="Features/WorkItems/Queries/GetWorkItemById/" />
+    <Folder Include="Features/WorkItems/Queries/GetWorkItemReminders/" />
+    <Folder Include="Features/WorkItems/Queries/ListWorkItems/" />
+    <Folder Include="Mappings/" />
+  </ItemGroup>
+
+</Project>
