@@ -1,36 +1,65 @@
-version: '3.8'
-
 services:
   postgres:
-    image: postgres:15-alpine
-    container_name: smarttask_postgres
-    restart: always
+    image: postgres:16-alpine
+    container_name: smarttaskmanagement-db
     environment:
-      POSTGRES_DB: SmartTaskDB
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: Admin123!
+      POSTGRES_DB: SmartTaskManagement
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: StrongPassword123!
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/postgres_data
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
     networks:
-      - smarttask_network
+      - smarttaskmanagement-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: smarttask_pgadmin
-    restart: always
+  seq:
+    image: datalust/seq:latest
+    container_name: smarttaskmanagement-seq
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@smarttask.com
-      PGADIM_DEFAULT_PASSWORD: Admin123!
+      ACCEPT_EULA: "Y"
     ports:
-      - "5050:80"
-    depends_on:
-      - smarttask_network
+      - "5341:5341"
+      - "8081:80"
+    networks:
+      - smarttaskmanagement-network
 
-  networks:
-    smarttask_network:
-      driver: bridge
-    
+  api:                         # ✅ Correct: same level as postgres and seq
+    build: .
+    container_name: smarttaskmanagement-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:5000"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=SmartTaskManagement;Username=postgres;Password=StrongPassword123!"
+      ConnectionStrings__HangfireConnection: "Host=postgres;Port=5432;Database=Hangfire;Username=postgres;Password=StrongPassword123!"
+      Auth0__Domain: "${AUTH0_DOMAIN}"
+      Auth0__Audience: "${AUTH0_AUDIENCE}"
+      Auth0__ClientId: "${AUTH0_CLIENT_ID}"
+      Auth0__ClientSecret: "${AUTH0_CLIENT_SECRET}"
+      Seq__ServerUrl: "http://seq:5341"
+    ports:
+      - "5000:5000"
+      - "5001:5001"
     volumes:
-      postgres_data:
+      - aspnet_data_protection_keys:/root/.aspnet/DataProtection-Keys
+    depends_on:
+      postgres:
+        condition: service_healthy
+      seq:
+        condition: service_started
+    networks:
+      - smarttaskmanagement-network
+
+volumes:
+  postgres_data:
+  aspnet_data_protection_keys:
+
+networks:
+  smarttaskmanagement-network:
+    driver: bridge
