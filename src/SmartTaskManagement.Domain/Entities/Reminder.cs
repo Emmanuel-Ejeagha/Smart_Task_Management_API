@@ -1,217 +1,140 @@
-using SmartTaskManagement.Domain.Common;
+using SmartTaskManagement.Domain.Entities.Base;
 using SmartTaskManagement.Domain.Enums;
 using SmartTaskManagement.Domain.Events;
 
 namespace SmartTaskManagement.Domain.Entities;
 
 /// <summary>
-/// Represents a reminder for a WorkItem.
-/// Junior Developer Explanation: Reminders are scheduled notifications
-/// that remind users about WorkItems. They can be one-time or recurring.
-/// Reminder is a child entity of WorkItem (it belongs to a WorkItem).
+/// Represents a reminder for a work item
 /// </summary>
-public sealed class Reminder : AuditableEntity
+public class Reminder : AuditableEntity
 {
-    /// <summary>
-    /// Type of reminder (Notification, Email, SMS, etc.).
-    /// </summary>
-    public ReminderType Type { get; private set; }
+    // Private constructor for EF Core
+    private Reminder() { }
 
-    /// <summary>
-    /// Message to display/send in the reminder.
-    /// </summary>
-    public string Message { get; private set; }
-
-    /// <summary>
-    /// When the reminder is scheduled to trigger.
-    /// </summary>
-    public DateTime ScheduledTime { get; private set; }
-
-    /// <summary>
-    /// When the reminder was actually sent (if sent).
-    /// </summary>
-    public DateTime? SentAt { get; private set; }
-
-    /// <summary>
-    /// ID of the WorkItem this reminder is for.
-    /// </summary>
-    public Guid WorkItemId { get; private set; }
-
-    /// <summary>
-    /// ID of the tenant that owns this reminder.
-    /// </summary>
-    public Guid TenantId { get; private set; }
-
-    /// <summary>
-    /// Whether the reminder is active (will trigger).
-    /// </summary>
-    public bool IsActive { get; private set; } = true;
-
-    /// <summary>
-    /// Recurrence pattern for the reminder (optional).
-    /// Example: "Daily", "Weekly", "Monthly".
-    /// </summary>
-    public string? RecurrencePattern { get; private set; }
-
-    /// <summary>
-    /// Private constructor for EF Core.
-    /// </summary>
-    private Reminder()
-    {
-        Message = string.Empty;
-    }
-
-    /// <summary>
-    /// Creates a new Reminder.
-    /// </summary>
     public Reminder(
         Guid workItemId,
-        Guid tenantId,
+        DateTime reminderDateUtc,
         string message,
-        DateTime scheduledTime,
-        string createdBy,
-        ReminderType type = ReminderType.Notification,
-        string? recurrencePattern = null)
+        string createdBy)
     {
+        if (reminderDateUtc <= DateTime.UtcNow)
+            throw new ArgumentException("Reminder date must be in the future", nameof(reminderDateUtc));
+
         if (string.IsNullOrWhiteSpace(message))
-            throw new ArgumentException("Message is required.", nameof(message));
-        
-        if (string.IsNullOrWhiteSpace(createdBy))
-            throw new ArgumentException("CreatedBy is required.", nameof(createdBy));
-        
-        if (scheduledTime <= DateTime.UtcNow)
-            throw new ArgumentException("Scheduled time must be in the future.", nameof(scheduledTime));
+            throw new ArgumentException("Message cannot be null or empty", nameof(message));
 
         WorkItemId = workItemId;
-        TenantId = tenantId;
-        Message = message.Trim();
-        ScheduledTime = scheduledTime;
-        Type = type;
-        RecurrencePattern = recurrencePattern;
+        ReminderDateUtc = reminderDateUtc;
+        Message = message;
+        Status = ReminderStatus.Scheduled;
 
         MarkAsCreated(createdBy);
     }
 
+    public Guid WorkItemId { get; private set; }
+    public DateTime ReminderDateUtc { get; private set; }
+    public string Message { get; private set; } = string.Empty;
+    public ReminderStatus Status { get; private set; }
+    public DateTime? TriggeredAtUtc { get; private set; }
+    public string? ErrorMessage { get; private set; }
+
+    // Navigation property
+    public WorkItem? WorkItem { get; private set; }
+
     /// <summary>
-    /// Updates the reminder message.
+    /// Update reminder information
     /// </summary>
-    public void UpdateMessage(string message, string updatedBy)
+    public void Update(DateTime reminderDateUtc, string message, string updatedBy)
     {
+        if (reminderDateUtc <= DateTime.UtcNow)
+            throw new ArgumentException("Reminder date must be in the future", nameof(reminderDateUtc));
+
         if (string.IsNullOrWhiteSpace(message))
-            throw new ArgumentException("Message is required.", nameof(message));
+            throw new ArgumentException("Message cannot be null or empty", nameof(message));
 
-        Message = message.Trim();
+        if (Status != ReminderStatus.Scheduled)
+            throw new InvalidOperationException("Can only update scheduled reminders");
+
+        ReminderDateUtc = reminderDateUtc;
+        Message = message;
+
         MarkAsUpdated(updatedBy);
     }
 
     /// <summary>
-    /// Reschedules the reminder.
+    /// Mark the reminder as triggered
     /// </summary>
-    public void Reschedule(DateTime newScheduledTime, string updatedBy)
+    public void MarkAsTriggered(string updatedBy)
     {
-        if (newScheduledTime <= DateTime.UtcNow)
-            throw new ArgumentException("New scheduled time must be in the future.", nameof(newScheduledTime));
+        if (Status != ReminderStatus.Scheduled)
+            throw new InvalidOperationException("Can only trigger scheduled reminders");
 
-        ScheduledTime = newScheduledTime;
+        Status = ReminderStatus.Triggered;
+        TriggeredAtUtc = DateTime.UtcNow;
+
+        MarkAsUpdated(updatedBy);
+        AddDomainEvent(new ReminderTriggeredDomainEvent(this));
+    }
+
+    /// <summary>
+    /// Mark the reminder as failed
+    /// </summary>
+    public void MarkAsFailed(string errorMessage, string updatedBy)
+    {
+        if (Status != ReminderStatus.Scheduled)
+            throw new InvalidOperationException("Can only mark scheduled reminders as failed");
+
+        Status = ReminderStatus.Failed;
+        ErrorMessage = errorMessage;
+
         MarkAsUpdated(updatedBy);
     }
 
     /// <summary>
-    /// Marks the reminder as sent.
+    /// Cancel the reminder
     /// </summary>
-    public void MarkAsSent()
+    public void Cancel(string updatedBy)
     {
-        if (SentAt.HasValue)
-            throw new InvalidOperationException("Reminder has already been sent.");
+        if (Status != ReminderStatus.Scheduled)
+            throw new InvalidOperationException("Can only cancel scheduled reminders");
 
-        SentAt = DateTime.UtcNow;
-        
-        // Raise domain event
-        AddDomainEvent(new ReminderTriggeredEvent(
-            Id,
-            WorkItemId,
-            string.Empty, // Will be populated by infrastructure
-            CreatedBy,
-            Message,
-            ScheduledTime));
-    }
+        Status = ReminderStatus.Cancelled;
 
-    /// <summary>
-    /// Activates the reminder.
-    /// </summary>
-    public void Activate(string updatedBy)
-    {
-        if (IsActive)
-            throw new InvalidOperationException("Reminder is already active.");
-
-        IsActive = true;
         MarkAsUpdated(updatedBy);
     }
 
     /// <summary>
-    /// Deactivates the reminder.
+    /// Reschedule a cancelled or failed reminder
     /// </summary>
-    public void Deactivate(string updatedBy)
+    public void Reschedule(DateTime newReminderDateUtc, string updatedBy)
     {
-        if (!IsActive)
-            throw new InvalidOperationException("Reminder is already inactive.");
+        if (Status != ReminderStatus.Cancelled && Status != ReminderStatus.Failed)
+            throw new InvalidOperationException("Can only reschedule cancelled or failed reminders");
 
-        IsActive = false;
+        if (newReminderDateUtc <= DateTime.UtcNow)
+            throw new ArgumentException("Reminder date must be in the future", nameof(newReminderDateUtc));
+
+        Status = ReminderStatus.Scheduled;
+        ReminderDateUtc = newReminderDateUtc;
+        ErrorMessage = null;
+
         MarkAsUpdated(updatedBy);
     }
 
     /// <summary>
-    /// Updates the recurrence pattern.
+    /// Check if reminder is pending (scheduled and not yet due)
     /// </summary>
-    public void UpdateRecurrencePattern(string? recurrencePattern, string updatedBy)
+    public bool IsPending()
     {
-        RecurrencePattern = recurrencePattern;
-        MarkAsUpdated(updatedBy);
+        return Status == ReminderStatus.Scheduled && ReminderDateUtc > DateTime.UtcNow;
     }
 
     /// <summary>
-    /// Checks if the reminder should trigger now.
+    /// Check if reminder is due
     /// </summary>
-    public bool ShouldTriggerNow()
+    public bool IsDue()
     {
-        return IsActive && 
-               !SentAt.HasValue && 
-               ScheduledTime <= DateTime.UtcNow;
+        return Status == ReminderStatus.Scheduled && ReminderDateUtc <= DateTime.UtcNow;
     }
-
-    /// <summary>
-    /// Checks if the reminder is overdue (should have triggered but didn't).
-    /// </summary>
-    public bool IsOverdue()
-    {
-        return IsActive && 
-               !SentAt.HasValue && 
-               ScheduledTime < DateTime.UtcNow.AddMinutes(-5); // 5 minutes grace period
-    }
-}
-
-/// <summary>
-/// Type of reminder.
-/// </summary>
-public enum ReminderType
-{
-    /// <summary>
-    /// In-app notification.
-    /// </summary>
-    Notification = 1,
-
-    /// <summary>
-    /// Email notification.
-    /// </summary>
-    Email = 2,
-
-    /// <summary>
-    /// SMS notification.
-    /// </summary>
-    Sms = 3,
-
-    /// <summary>
-    /// Push notification.
-    /// </summary>
-    Push = 4
 }
