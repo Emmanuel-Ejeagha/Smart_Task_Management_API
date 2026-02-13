@@ -258,7 +258,7 @@ You are free to use, modify, and distribute it for any purpose, including commer
 
 ## 📬 Contact & Community
 
-Maintainer: **Your Name** — [your.email@example.com](mailto:your.email@example.com)
+Maintainer: **Your Name** — [your.email@example.com](mailto:emma.ejeagha@gmail.com)
 
 * GitHub Issues — report bugs
 * Discussions — start a discussion
