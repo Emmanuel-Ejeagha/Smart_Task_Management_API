@@ -1,0 +1,483 @@
+{
+  "format": 1,
+  "restore": {
+    "/home/emmytek/Desktop/Smart_Task_Management_API/tests/SmartTaskManagement.Application.UnitTests/SmartTaskManagement.Application.UnitTests.csproj": {}
+  },
+  "projects": {
+    "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Application/SmartTaskManagement.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Application/SmartTaskManagement.Application.csproj",
+        "projectName": "SmartTaskManagement.Application",
+        "projectPath": "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Application/SmartTaskManagement.Application.csproj",
+        "packagesPath": "/home/emmytek/.nuget/packages/",
+        "outputPath": "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Application/obj/",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "configFilePaths": [
+          "/home/emmytek/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "/usr/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Domain/SmartTaskManagement.Domain.csproj": {
+                "projectPath": "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Domain/SmartTaskManagement.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Ardalis.Specification": {
+              "target": "Package",
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Ardalis.Specification.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )",
+              "versionCentrallyManaged": true
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.1, )",
+              "versionCentrallyManaged": true
+            },
+            "ErrorOr": {
+              "target": "Package",
+              "version": "[1.3.0, )",
+              "versionCentrallyManaged": true
+            },
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[11.8.1, )",
+              "versionCentrallyManaged": true
+            },
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.0, )",
+              "versionCentrallyManaged": true
+            },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[11.8.1, )",
+              "versionCentrallyManaged": true
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[12.2.0, )",
+              "versionCentrallyManaged": true
+            },
+            "MediatR.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[10.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.4, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.EntityFrameworkCore.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.4, )",
+              "versionCentrallyManaged": true
+            },
+            "System.Diagnostics.PerformanceCounter": {
+              "target": "Package",
+              "version": "[8.0.0, )",
+              "versionCentrallyManaged": true
+            }
+          },
+          "centralPackageVersions": {
+            "Ardalis.Specification": "8.0.0",
+            "Ardalis.Specification.EntityFrameworkCore": "8.0.0",
+            "Asp.Versioning.Mvc": "8.0.0",
+            "Asp.Versioning.Mvc.ApiExplorer": "8.0.0",
+            "AspNetCore.HealthChecks.Hangfire": "8.0.0",
+            "AspNetCore.HealthChecks.NpgSql": "8.0.0",
+            "AspNetCore.HealthChecks.UI.Client": "8.0.0",
+            "AutoMapper": "12.0.1",
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
+            "coverlet.collector": "6.0.0",
+            "EFCore.CheckConstraints": "8.0.1",
+            "EFCore.NamingConventions": "8.0.3",
+            "ErrorOr": "1.3.0",
+            "FluentAssertions": "8.8.0",
+            "FluentValidation": "11.8.1",
+            "FluentValidation.AspNetCore": "11.3.0",
+            "FluentValidation.DependencyInjectionExtensions": "11.8.1",
+            "Hangfire": "1.8.9",
+            "Hangfire.AspNetCore": "1.8.9",
+            "Hangfire.PostgreSql": "1.20.5",
+            "Hellang.Middleware.ProblemDetails": "6.5.1",
+            "MediatR": "12.2.0",
+            "MediatR.Extensions.Microsoft.DependencyInjection": "10.0.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.4",
+            "Microsoft.AspNetCore.Mvc.Testing": "8.0.4",
+            "Microsoft.AspNetCore.OpenApi": "8.0.4",
+            "Microsoft.EntityFrameworkCore": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Abstractions": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Proxies": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Tools": "8.0.4",
+            "Microsoft.NET.Test.Sdk": "17.8.0",
+            "Moq": "4.20.70",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.2",
+            "Respawn": "6.2.1",
+            "SendGrid": "9.29.3",
+            "SendGrid.Extensions.DependencyInjection": "1.0.1",
+            "Serilog.AspNetCore": "8.0.0",
+            "Serilog.Sinks.Console": "5.0.1",
+            "Serilog.Sinks.File": "5.0.0",
+            "Serilog.Sinks.Seq": "7.0.0",
+            "Swashbuckle.AspNetCore": "6.6.2",
+            "Swashbuckle.AspNetCore.Annotations": "6.5.0",
+            "System.Diagnostics.PerformanceCounter": "8.0.0",
+            "Testcontainers.PostgreSql": "3.9.0",
+            "xunit": "2.6.6",
+            "xunit.runner.visualstudio": "2.5.6"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Domain/SmartTaskManagement.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Domain/SmartTaskManagement.Domain.csproj",
+        "projectName": "SmartTaskManagement.Domain",
+        "projectPath": "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Domain/SmartTaskManagement.Domain.csproj",
+        "packagesPath": "/home/emmytek/.nuget/packages/",
+        "outputPath": "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "configFilePaths": [
+          "/home/emmytek/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "/usr/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "centralPackageVersions": {
+            "Ardalis.Specification": "8.0.0",
+            "Ardalis.Specification.EntityFrameworkCore": "8.0.0",
+            "Asp.Versioning.Mvc": "8.0.0",
+            "Asp.Versioning.Mvc.ApiExplorer": "8.0.0",
+            "AspNetCore.HealthChecks.Hangfire": "8.0.0",
+            "AspNetCore.HealthChecks.NpgSql": "8.0.0",
+            "AspNetCore.HealthChecks.UI.Client": "8.0.0",
+            "AutoMapper": "12.0.1",
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
+            "coverlet.collector": "6.0.0",
+            "EFCore.CheckConstraints": "8.0.1",
+            "EFCore.NamingConventions": "8.0.3",
+            "ErrorOr": "1.3.0",
+            "FluentAssertions": "8.8.0",
+            "FluentValidation": "11.8.1",
+            "FluentValidation.AspNetCore": "11.3.0",
+            "FluentValidation.DependencyInjectionExtensions": "11.8.1",
+            "Hangfire": "1.8.9",
+            "Hangfire.AspNetCore": "1.8.9",
+            "Hangfire.PostgreSql": "1.20.5",
+            "Hellang.Middleware.ProblemDetails": "6.5.1",
+            "MediatR": "12.2.0",
+            "MediatR.Extensions.Microsoft.DependencyInjection": "10.0.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.4",
+            "Microsoft.AspNetCore.Mvc.Testing": "8.0.4",
+            "Microsoft.AspNetCore.OpenApi": "8.0.4",
+            "Microsoft.EntityFrameworkCore": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Abstractions": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Proxies": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Tools": "8.0.4",
+            "Microsoft.NET.Test.Sdk": "17.8.0",
+            "Moq": "4.20.70",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.2",
+            "Respawn": "6.2.1",
+            "SendGrid": "9.29.3",
+            "SendGrid.Extensions.DependencyInjection": "1.0.1",
+            "Serilog.AspNetCore": "8.0.0",
+            "Serilog.Sinks.Console": "5.0.1",
+            "Serilog.Sinks.File": "5.0.0",
+            "Serilog.Sinks.Seq": "7.0.0",
+            "Swashbuckle.AspNetCore": "6.6.2",
+            "Swashbuckle.AspNetCore.Annotations": "6.5.0",
+            "System.Diagnostics.PerformanceCounter": "8.0.0",
+            "Testcontainers.PostgreSql": "3.9.0",
+            "xunit": "2.6.6",
+            "xunit.runner.visualstudio": "2.5.6"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/home/emmytek/Desktop/Smart_Task_Management_API/tests/SmartTaskManagement.Application.UnitTests/SmartTaskManagement.Application.UnitTests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/home/emmytek/Desktop/Smart_Task_Management_API/tests/SmartTaskManagement.Application.UnitTests/SmartTaskManagement.Application.UnitTests.csproj",
+        "projectName": "SmartTaskManagement.Application.UnitTests",
+        "projectPath": "/home/emmytek/Desktop/Smart_Task_Management_API/tests/SmartTaskManagement.Application.UnitTests/SmartTaskManagement.Application.UnitTests.csproj",
+        "packagesPath": "/home/emmytek/.nuget/packages/",
+        "outputPath": "/home/emmytek/Desktop/Smart_Task_Management_API/tests/SmartTaskManagement.Application.UnitTests/obj/",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "configFilePaths": [
+          "/home/emmytek/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "/usr/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Application/SmartTaskManagement.Application.csproj": {
+                "projectPath": "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Application/SmartTaskManagement.Application.csproj"
+              },
+              "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Domain/SmartTaskManagement.Domain.csproj": {
+                "projectPath": "/home/emmytek/Desktop/Smart_Task_Management_API/src/SmartTaskManagement.Domain/SmartTaskManagement.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )",
+              "versionCentrallyManaged": true
+            },
+            "FluentAssertions": {
+              "target": "Package",
+              "version": "[8.8.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )",
+              "versionCentrallyManaged": true
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.70, )",
+              "versionCentrallyManaged": true
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )",
+              "versionCentrallyManaged": true
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.6.6, )",
+              "versionCentrallyManaged": true
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.5.6, )",
+              "versionCentrallyManaged": true
+            }
+          },
+          "centralPackageVersions": {
+            "Ardalis.Specification": "8.0.0",
+            "Ardalis.Specification.EntityFrameworkCore": "8.0.0",
+            "Asp.Versioning.Mvc": "8.0.0",
+            "Asp.Versioning.Mvc.ApiExplorer": "8.0.0",
+            "AspNetCore.HealthChecks.Hangfire": "8.0.0",
+            "AspNetCore.HealthChecks.NpgSql": "8.0.0",
+            "AspNetCore.HealthChecks.UI.Client": "8.0.0",
+            "AutoMapper": "12.0.1",
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": "12.0.1",
+            "coverlet.collector": "6.0.0",
+            "EFCore.CheckConstraints": "8.0.1",
+            "EFCore.NamingConventions": "8.0.3",
+            "ErrorOr": "1.3.0",
+            "FluentAssertions": "8.8.0",
+            "FluentValidation": "11.8.1",
+            "FluentValidation.AspNetCore": "11.3.0",
+            "FluentValidation.DependencyInjectionExtensions": "11.8.1",
+            "Hangfire": "1.8.9",
+            "Hangfire.AspNetCore": "1.8.9",
+            "Hangfire.PostgreSql": "1.20.5",
+            "Hellang.Middleware.ProblemDetails": "6.5.1",
+            "MediatR": "12.2.0",
+            "MediatR.Extensions.Microsoft.DependencyInjection": "10.0.0",
+            "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.4",
+            "Microsoft.AspNetCore.Mvc.Testing": "8.0.4",
+            "Microsoft.AspNetCore.OpenApi": "8.0.4",
+            "Microsoft.EntityFrameworkCore": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Abstractions": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Design": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Proxies": "8.0.4",
+            "Microsoft.EntityFrameworkCore.Tools": "8.0.4",
+            "Microsoft.NET.Test.Sdk": "17.8.0",
+            "Moq": "4.20.70",
+            "Npgsql.EntityFrameworkCore.PostgreSQL": "8.0.2",
+            "Respawn": "6.2.1",
+            "SendGrid": "9.29.3",
+            "SendGrid.Extensions.DependencyInjection": "1.0.1",
+            "Serilog.AspNetCore": "8.0.0",
+            "Serilog.Sinks.Console": "5.0.1",
+            "Serilog.Sinks.File": "5.0.0",
+            "Serilog.Sinks.Seq": "7.0.0",
+            "Swashbuckle.AspNetCore": "6.6.2",
+            "Swashbuckle.AspNetCore.Annotations": "6.5.0",
+            "System.Diagnostics.PerformanceCounter": "8.0.0",
+            "Testcontainers.PostgreSql": "3.9.0",
+            "xunit": "2.6.6",
+            "xunit.runner.visualstudio": "2.5.6"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.101/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
