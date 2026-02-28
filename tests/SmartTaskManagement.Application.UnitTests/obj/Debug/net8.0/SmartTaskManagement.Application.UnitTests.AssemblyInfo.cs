@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartTaskManagement.Application.UnitTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+799da5b4e1785b61cbd1905e8383bca2b5de02e9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+faaa60d751d8b6373e6a790bde30682f3b3535bb")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartTaskManagement.Application.UnitTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartTaskManagement.Application.UnitTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
